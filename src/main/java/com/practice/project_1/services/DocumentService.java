@@ -1,0 +1,40 @@
+package com.practice.project_1.services;
+
+import com.practice.project_1.entity.Document;
+import com.practice.project_1.entity.Person;
+import com.practice.project_1.repositories.DocumentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+@Service
+public class DocumentService {
+
+    @Autowired
+    private final DocumentRepository documentRepository;
+
+    public DocumentService(DocumentRepository documentRepository) {
+        this.documentRepository = documentRepository;
+    }
+
+    public void save(Document document) {
+        documentRepository.save(document);
+    }
+
+    public Document findById(UUID uuid) {
+        return documentRepository.findById(uuid).orElseThrow();
+    }
+
+    public void delete(UUID uuid) {
+        if (!documentRepository.existsById(uuid)) {
+            throw new NoSuchElementException("Document with this uuid is not found");
+        }
+        documentRepository.deleteById(uuid);
+    }
+
+    public void deleteAll() {
+        documentRepository.deleteAll();
+    }
+}
