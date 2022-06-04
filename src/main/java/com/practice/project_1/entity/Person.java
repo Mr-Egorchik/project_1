@@ -1,7 +1,7 @@
 package com.practice.project_1.entity;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,12 +9,11 @@ import java.util.UUID;
 @Table(name = "Person")
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "birthday", nullable = false)
-    private Date date;
+    private LocalDate date;
     @OneToMany(mappedBy = "person")
     private List<Document> documents;
     @ManyToMany
@@ -25,7 +24,7 @@ public class Person {
     public Person() {
     }
 
-    public Person(UUID uuid, String name, Date date, List<Document> documents, List<Address> addresses, List<Contact> contacts) {
+    public Person(UUID uuid, String name, LocalDate date, List<Document> documents, List<Address> addresses, List<Contact> contacts) {
         this.uuid = uuid;
         this.name = name;
         this.date = date;
@@ -50,11 +49,11 @@ public class Person {
         this.name = name;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

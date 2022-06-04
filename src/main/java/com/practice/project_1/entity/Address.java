@@ -1,6 +1,10 @@
 package com.practice.project_1.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,8 +13,9 @@ import java.util.UUID;
 public class Address {
     public enum AddType {RESIDENTIAL, REGISTRATION, POSTAL}
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
+    @Column(name = "addressType")
+    private AddType addType;
     @Column(name = "country", nullable = false)
     private String country;
     @Column(name = "city", nullable = false)
@@ -20,13 +25,15 @@ public class Address {
     @Column(name = "building", nullable = false)
     private int building;
     @ManyToMany(mappedBy = "addresses")
+    @JsonIgnore
     private List<Person> persons;
 
     public Address() {
     }
 
-    public Address(UUID uuid, String country, String city, String street, int building, List<Person> persons) {
+    public Address(UUID uuid, AddType addType, String country, String city, String street, int building, List<Person> persons) {
         this.uuid = uuid;
+        this.addType = addType;
         this.country = country;
         this.city = city;
         this.street = street;
@@ -40,6 +47,14 @@ public class Address {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public AddType getAddType() {
+        return addType;
+    }
+
+    public void setAddType(AddType addType) {
+        this.addType = addType;
     }
 
     public String getCountry() {
@@ -80,5 +95,14 @@ public class Address {
 
     public void setPersons(List<Person> persons) {
         this.persons = persons;
+    }
+
+    @JsonGetter
+    public List<UUID> getPersonId() {
+        List<UUID> res = new ArrayList<>();
+        for (Person person: persons) {
+            res.add(person.getUuid());
+        }
+        return res;
     }
 }

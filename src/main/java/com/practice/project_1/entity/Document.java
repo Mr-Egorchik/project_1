@@ -1,5 +1,8 @@
 package com.practice.project_1.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -8,13 +11,14 @@ import java.util.UUID;
 public class Document {
     public enum DocType { PASSPORT, INT_PASSPORT, SNILS, INSURANCE_POLICY, DRIVERS_LICENCE}
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
     @Column(name = "docType", nullable = false)
     private DocType docType;
     @Column(name = "info", nullable = false)
     private String info;
     @ManyToOne
+    @JoinColumn(name = "person_id")
+    @JsonIgnore
     private Person person;
 
     public Document() {
@@ -57,5 +61,10 @@ public class Document {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    @JsonGetter
+    public UUID getPersonId() {
+        return person.getUuid();
     }
 }

@@ -1,5 +1,8 @@
 package com.practice.project_1.entity;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -8,18 +11,22 @@ import java.util.UUID;
 public class Contact {
     public enum ContactType {PHONE, EMAIL, VK, TELEGRAM}
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
+    @Column(name = "contactType")
+    private ContactType contactType;
     @Column(name = "info")
     private String info;
     @ManyToOne
+    @JoinColumn(name = "person_id")
+    @JsonIgnore
     private Person person;
 
     public Contact() {
     }
 
-    public Contact(UUID uuid, String info, Person person) {
+    public Contact(UUID uuid, ContactType contactType, String info, Person person) {
         this.uuid = uuid;
+        this.contactType = contactType;
         this.info = info;
         this.person = person;
     }
@@ -36,6 +43,14 @@ public class Contact {
         return info;
     }
 
+    public ContactType getContactType() {
+        return contactType;
+    }
+
+    public void setContactType(ContactType contactType) {
+        this.contactType = contactType;
+    }
+
     public void setInfo(String info) {
         this.info = info;
     }
@@ -46,5 +61,10 @@ public class Contact {
 
     public void setPerson(Person person) {
         this.person = person;
+    }
+
+    @JsonGetter
+    public UUID getPersonId() {
+        return person.getUuid();
     }
 }

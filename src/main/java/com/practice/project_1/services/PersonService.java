@@ -5,21 +5,25 @@ import com.practice.project_1.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 public class PersonService {
 
-    @Autowired
     private final PersonRepository personRepository;
-
+    @Autowired
     public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
     
     public void save(Person person) {
         personRepository.save(person);
+    }
+
+    public List<Person> findAll() {
+        return (List<Person>) personRepository.findAll();
     }
     
     public Person findById(UUID uuid) {
