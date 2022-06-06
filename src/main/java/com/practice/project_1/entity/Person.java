@@ -1,9 +1,12 @@
 package com.practice.project_1.entity;
 
+import com.practice.project_1.dto.PersonDto;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Person")
@@ -79,5 +82,9 @@ public class Person {
 
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public PersonDto toDto() {
+        return new PersonDto(uuid, name, date, documents.stream().map(Document::toDto).collect(Collectors.toList()), addresses.stream().map(Address::toDto).collect(Collectors.toList()), contacts.stream().map(Contact::toDto).collect(Collectors.toList()));
     }
 }

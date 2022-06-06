@@ -2,16 +2,19 @@ package com.practice.project_1.entity;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.practice.project_1.dto.AddressDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Address")
 public class Address {
     public enum AddType {RESIDENTIAL, REGISTRATION, POSTAL}
+
     @Id
     private UUID uuid;
     @Column(name = "addressType")
@@ -25,7 +28,6 @@ public class Address {
     @Column(name = "building", nullable = false)
     private int building;
     @ManyToMany(mappedBy = "addresses")
-    @JsonIgnore
     private List<Person> persons;
 
     public Address() {
@@ -97,12 +99,7 @@ public class Address {
         this.persons = persons;
     }
 
-    @JsonGetter
-    public List<UUID> getPersonId() {
-        List<UUID> res = new ArrayList<>();
-        for (Person person: persons) {
-            res.add(person.getUuid());
-        }
-        return res;
+    public AddressDto toDto() {
+        return new AddressDto(uuid, addType, country, city, street, building, persons.stream().map(Person::getUuid).collect(Collectors.toList()));
     }
 }

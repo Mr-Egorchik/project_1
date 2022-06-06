@@ -24,7 +24,7 @@ public class AddressService {
     }
 
     public Address findById(UUID uuid) {
-        return addressRepository.findById(uuid).orElseThrow();
+        return addressRepository.findById(uuid).orElse(null);
     }
 
     public void delete(UUID uuid) {

@@ -2,6 +2,7 @@ package com.practice.project_1.entity;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.practice.project_1.dto.DocumentDto;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -9,7 +10,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "Document")
 public class Document {
-    public enum DocType { PASSPORT, INT_PASSPORT, SNILS, INSURANCE_POLICY, DRIVERS_LICENCE}
+    public enum DocType {PASSPORT, INT_PASSPORT, SNILS, INSURANCE_POLICY, DRIVERS_LICENCE}
+
     @Id
     private UUID uuid;
     @Column(name = "docType", nullable = false)
@@ -18,7 +20,6 @@ public class Document {
     private String info;
     @ManyToOne
     @JoinColumn(name = "person_id")
-    @JsonIgnore
     private Person person;
 
     public Document() {
@@ -63,8 +64,7 @@ public class Document {
         this.person = person;
     }
 
-    @JsonGetter
-    public UUID getPersonId() {
-        return person.getUuid();
+    public DocumentDto toDto() {
+        return new DocumentDto(uuid, docType, info, person.getUuid());
     }
 }

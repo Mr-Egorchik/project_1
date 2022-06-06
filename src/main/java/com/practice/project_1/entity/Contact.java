@@ -2,6 +2,7 @@ package com.practice.project_1.entity;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.practice.project_1.dto.ContactDto;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Table(name = "Contact")
 public class Contact {
     public enum ContactType {PHONE, EMAIL, VK, TELEGRAM}
+
     @Id
     private UUID uuid;
     @Column(name = "contactType")
@@ -18,7 +20,6 @@ public class Contact {
     private String info;
     @ManyToOne
     @JoinColumn(name = "person_id")
-    @JsonIgnore
     private Person person;
 
     public Contact() {
@@ -63,8 +64,7 @@ public class Contact {
         this.person = person;
     }
 
-    @JsonGetter
-    public UUID getPersonId() {
-        return person.getUuid();
+    public ContactDto toDto() {
+        return new ContactDto(uuid, contactType, info, person.getUuid());
     }
 }

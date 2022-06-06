@@ -24,7 +24,7 @@ public class ContactService {
     }
 
     public Contact findById(UUID uuid) {
-        return contactRepository.findById(uuid).orElseThrow();
+        return contactRepository.findById(uuid).orElse(null);
     }
 
     public void delete(UUID uuid) {
