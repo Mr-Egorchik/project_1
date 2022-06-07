@@ -63,8 +63,4 @@ public class Document {
     public void setPerson(Person person) {
         this.person = person;
     }
-
-    public DocumentDto toDto() {
-        return new DocumentDto(uuid, docType, info, person.getUuid());
-    }
 }

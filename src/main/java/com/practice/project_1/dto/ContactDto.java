@@ -13,8 +13,6 @@ public class ContactDto implements Serializable {
     private final Contact.ContactType contactType;
     private final String info;
     private final UUID personUuid;
-    @Autowired
-    private PersonService personService;
 
     public ContactDto(UUID uuid, Contact.ContactType contactType, String info, UUID personUuid) {
         this.uuid = uuid;
@@ -37,10 +35,6 @@ public class ContactDto implements Serializable {
 
     public UUID getPersonUuid() {
         return personUuid;
-    }
-
-    public Contact toEntity() {
-        return new Contact(uuid, contactType, info, personService.findById(personUuid));
     }
 
     @Override

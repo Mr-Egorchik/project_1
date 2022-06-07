@@ -63,8 +63,4 @@ public class Contact {
     public void setPerson(Person person) {
         this.person = person;
     }
-
-    public ContactDto toDto() {
-        return new ContactDto(uuid, contactType, info, person.getUuid());
-    }
 }

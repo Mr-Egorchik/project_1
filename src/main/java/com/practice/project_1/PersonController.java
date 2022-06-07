@@ -5,6 +5,10 @@ import com.practice.project_1.entity.Address;
 import com.practice.project_1.entity.Contact;
 import com.practice.project_1.entity.Document;
 import com.practice.project_1.entity.Person;
+import com.practice.project_1.mapping.AddressMapping;
+import com.practice.project_1.mapping.ContactMapping;
+import com.practice.project_1.mapping.DocumentMapping;
+import com.practice.project_1.mapping.PersonMapping;
 import com.practice.project_1.services.AddressService;
 import com.practice.project_1.services.ContactService;
 import com.practice.project_1.services.DocumentService;
@@ -35,6 +39,8 @@ public class PersonController {
     private ContactService contactService;
     @Autowired
     private DocumentService documentService;
+    @Autowired
+    private PersonMapping personMapping;
 
     private static final Logger log = LoggerFactory.getLogger(PersonController.class);
 
@@ -47,20 +53,20 @@ public class PersonController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         log.info("OK-response for GET/persons/" + uuid + " request");
-        return ResponseEntity.ok(person.toDto());
+        return ResponseEntity.ok(personMapping.entityToDto(person));
     }
 
     @PostMapping("")
     public ResponseEntity<PersonDto> savePerson(@RequestBody PersonDto personDto) {
         log.info("Start POST/persons request");
-        personService.save(personDto.toEntity());
+        personService.save(personDto);
         log.info("New person is saved");
         log.info("OK-response for POST/persons request");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Person> deletePerson(@PathVariable(value = "id") UUID uuid) {
+    public ResponseEntity<PersonDto> deletePerson(@PathVariable(value = "id") UUID uuid) {
         log.info("Start DELETE/persons" + uuid + " request");
         personService.delete(uuid);
         log.info("Person is deleted");
@@ -69,12 +75,12 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updPerson(@PathVariable(value = "id") UUID uuid, @RequestBody Person person) {
+    public ResponseEntity<PersonDto> updPerson(@PathVariable(value = "id") UUID uuid, @RequestBody PersonDto personDto) {
         log.info("Start PUT/persons" + uuid + " request");
-        personService.update(uuid, person);
+        personService.update(uuid, personDto);
         log.info("Person data is updated");
         log.info("OK-response for PUT/persons" + uuid + " request");
-        return ResponseEntity.ok().body(person);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("")
@@ -86,7 +92,7 @@ public class PersonController {
             Pageable page = PageRequest.of(pageNum - 1, pageSize);
             List<PersonDto> personDtoList = new ArrayList<>();
             for (Person person : personService.findAll(page))
-                personDtoList.add(person.toDto());
+                personDtoList.add(personMapping.entityToDto(person));
             return ResponseEntity.ok().body(personDtoList);
         } catch (IllegalArgumentException e) {
             log.info(e.getMessage());
@@ -95,7 +101,7 @@ public class PersonController {
     }
 
     @GetMapping("/verify")
-    public ResponseEntity<Person> verifyPersonPassport(@RequestParam("name") String person, @RequestParam("passport") String passport) {
+    public ResponseEntity<PersonDto> verifyPersonPassport(@RequestParam("name") String person, @RequestParam("passport") String passport) {
         log.info("Start GET/persons/verify?name=" + person + "&passport=" + passport + " request");
         Document document = documentService.findByName(passport);
         if (document != null && document.getDocType().equals(Document.DocType.PASSPORT) && document.getPerson().getName().equals(person))

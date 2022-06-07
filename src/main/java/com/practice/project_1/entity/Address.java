@@ -98,8 +98,4 @@ public class Address {
     public void setPersons(List<Person> persons) {
         this.persons = persons;
     }
-
-    public AddressDto toDto() {
-        return new AddressDto(uuid, addType, country, city, street, building, persons.stream().map(Person::getUuid).collect(Collectors.toList()));
-    }
 }

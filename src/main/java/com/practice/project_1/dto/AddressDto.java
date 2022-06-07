@@ -20,8 +20,6 @@ public class AddressDto implements Serializable {
     private final String street;
     private final int building;
     private final List<UUID> personUuids;
-    @Autowired
-    private PersonService personService;
 
     public AddressDto(UUID uuid, Address.AddType addType, String country, String city, String street, int building, List<UUID> personUuids) {
         this.uuid = uuid;
@@ -59,13 +57,6 @@ public class AddressDto implements Serializable {
 
     public List<UUID> getPersonUuids() {
         return personUuids;
-    }
-
-    public Address toEntity() {
-        List<Person> personList = new ArrayList<>();
-        for (UUID id : personUuids)
-            personList.add(personService.findById(id));
-        return new Address(uuid, addType, country, city, street, building, personList);
     }
 
     @Override

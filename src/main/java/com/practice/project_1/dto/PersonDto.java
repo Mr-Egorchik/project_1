@@ -23,12 +23,6 @@ public class PersonDto implements Serializable {
     private final List<DocumentDto> documents;
     private final List<AddressDto> addresses;
     private final List<ContactDto> contacts;
-    @Autowired
-    private DocumentService documentService;
-    @Autowired
-    private ContactService contactService;
-    @Autowired
-    private AddressService addressService;
 
     public PersonDto(UUID uuid, String name, LocalDate date, List<DocumentDto> documents, List<AddressDto> addresses, List<ContactDto> contacts) {
         this.uuid = uuid;
@@ -61,19 +55,6 @@ public class PersonDto implements Serializable {
 
     public List<ContactDto> getContacts() {
         return contacts;
-    }
-
-    public Person toEntity() {
-        List<Document> documentList = new ArrayList<>();
-        List<Address> addressList = new ArrayList<>();
-        List<Contact> contactList = new ArrayList<>();
-        for (DocumentDto dto : documents)
-            documentList.add(documentService.findById(dto.getUuid()));
-        for (AddressDto dto : addresses)
-            addressList.add(addressService.findById(dto.getUuid()));
-        for (ContactDto dto : contacts)
-            contactList.add(contactService.findById(dto.getUuid()));
-        return new Person(uuid, name, date, documentList, addressList, contactList);
     }
 
     @Override

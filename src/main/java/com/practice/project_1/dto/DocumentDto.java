@@ -13,8 +13,6 @@ public class DocumentDto implements Serializable {
     private final Document.DocType docType;
     private final String info;
     private final UUID personUuid;
-    @Autowired
-    private PersonService personService;
 
     public DocumentDto(UUID uuid, Document.DocType docType, String info, UUID personUuid) {
         this.uuid = uuid;
@@ -37,10 +35,6 @@ public class DocumentDto implements Serializable {
 
     public UUID getPersonUuid() {
         return personUuid;
-    }
-
-    public Document toEntity() {
-        return new Document(uuid, docType, info, personService.findById(personUuid));
     }
 
     @Override

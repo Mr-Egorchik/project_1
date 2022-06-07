@@ -83,8 +83,4 @@ public class Person {
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
     }
-
-    public PersonDto toDto() {
-        return new PersonDto(uuid, name, date, documents.stream().map(Document::toDto).collect(Collectors.toList()), addresses.stream().map(Address::toDto).collect(Collectors.toList()), contacts.stream().map(Contact::toDto).collect(Collectors.toList()));
-    }
 }
