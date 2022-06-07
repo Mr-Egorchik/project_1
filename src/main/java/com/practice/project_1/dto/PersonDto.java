@@ -1,0 +1,107 @@
+package com.practice.project_1.dto;
+
+import com.practice.project_1.entity.Address;
+import com.practice.project_1.entity.Contact;
+import com.practice.project_1.entity.Document;
+import com.practice.project_1.entity.Person;
+import com.practice.project_1.services.AddressService;
+import com.practice.project_1.services.ContactService;
+import com.practice.project_1.services.DocumentService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+public class PersonDto implements Serializable {
+    private final UUID uuid;
+    private final String name;
+    private final LocalDate date;
+    private final List<DocumentDto> documents;
+    private final List<AddressDto> addresses;
+    private final List<ContactDto> contacts;
+    @Autowired
+    private DocumentService documentService;
+    @Autowired
+    private ContactService contactService;
+    @Autowired
+    private AddressService addressService;
+
+    public PersonDto(UUID uuid, String name, LocalDate date, List<DocumentDto> documents, List<AddressDto> addresses, List<ContactDto> contacts) {
+        this.uuid = uuid;
+        this.name = name;
+        this.date = date;
+        this.documents = documents;
+        this.addresses = addresses;
+        this.contacts = contacts;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public List<DocumentDto> getDocuments() {
+        return documents;
+    }
+
+    public List<AddressDto> getAddresses() {
+        return addresses;
+    }
+
+    public List<ContactDto> getContacts() {
+        return contacts;
+    }
+
+    public Person toEntity() {
+        List<Document> documentList = new ArrayList<>();
+        List<Address> addressList = new ArrayList<>();
+        List<Contact> contactList = new ArrayList<>();
+        for (DocumentDto dto : documents)
+            documentList.add(documentService.findById(dto.getUuid()));
+        for (AddressDto dto : addresses)
+            addressList.add(addressService.findById(dto.getUuid()));
+        for (ContactDto dto : contacts)
+            contactList.add(contactService.findById(dto.getUuid()));
+        return new Person(uuid, name, date, documentList, addressList, contactList);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PersonDto entity = (PersonDto) o;
+        return Objects.equals(this.uuid, entity.uuid) &&
+                Objects.equals(this.name, entity.name) &&
+                Objects.equals(this.date, entity.date) &&
+                Objects.equals(this.documents, entity.documents) &&
+                Objects.equals(this.addresses, entity.addresses) &&
+                Objects.equals(this.contacts, entity.contacts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, name, date, documents, addresses, contacts);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "uuid = " + uuid + ", " +
+                "name = " + name + ", " +
+                "date = " + date + ", " +
+                "documents = " + documents + ", " +
+                "addresses = " + addresses + ", " +
+                "contacts = " + contacts + ")";
+    }
+}
