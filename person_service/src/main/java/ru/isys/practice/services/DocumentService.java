@@ -27,7 +27,7 @@ public class DocumentService {
     }
 
     public Document findByName(String name) {
-        return documentRepository.findById(documentRepository.findByName(name)).orElse(null);
+        return documentRepository.findByName(name);
     }
 
     public void delete(UUID uuid) {
