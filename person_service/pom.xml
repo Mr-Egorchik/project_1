@@ -8,8 +8,8 @@
 		<version>2.7.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.practice</groupId>
-	<artifactId>project_1</artifactId>
+	<groupId>ru.isys.practice</groupId>
+	<artifactId>person_service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>project_1</name>
 	<description>Practice task 1</description>
