@@ -1,8 +1,10 @@
 package ru.isys.practice.services;
 
 import au.com.bytecode.opencsv.CSVReader;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
@@ -38,12 +40,15 @@ public class VaccinationService {
     private final VaccineService vaccineService;
     private static final Logger log = LoggerFactory.getLogger(VaccinationService.class);
     private static final String url = "http://localhost:9090/persons/verify?name={name}&passport={passport}";
+
+    private static VaccinationApi vaccinationApi;
     @Autowired
-    public VaccinationService(VaccinationRepository vaccinationRepository, VaccinationMapping vaccinationMapping, VaccinationCenterService vaccinationCenterService, VaccineService vaccineService) {
+    public VaccinationService(VaccinationRepository vaccinationRepository, VaccinationMapping vaccinationMapping, VaccinationCenterService vaccinationCenterService, VaccineService vaccineService, VaccinationApi vaccinationApi) {
         this.vaccinationRepository = vaccinationRepository;
         this.vaccinationMapping = vaccinationMapping;
         this.vaccinationCenterService = vaccinationCenterService;
         this.vaccineService = vaccineService;
+        VaccinationService.vaccinationApi = vaccinationApi;
     }
 
     public void save(VaccinationDto vaccinationDto) {
@@ -72,10 +77,11 @@ public class VaccinationService {
                     log.error("Wrong file");
                     break;
                 }
-                RestTemplate restTemplate = new RestTemplate();
+                //RestTemplate restTemplate = new RestTemplate();
                 try {
                     StringFromFileDto string = new StringFromFileDto(current);
-                    restTemplate.getForEntity(url, PersonDto.class, string.getName(), string.getPassport());
+                    //restTemplate.getForEntity(url, PersonDto.class, string.getName(), string.getPassport());
+                    vaccinationApi.verify(string.getName(), string.getPassport());
                     log.info("Passport-name is valid");
                     save(new VaccinationDto(UUID.fromString(string.getIdString()), LocalDate.parse(string.getDateString()), string.getName(), string.getPassport(), string.getVaccineName(), string.getVaccinationCenterName()));
                     log.info("Vaccination from string " + i + " is saved!");
@@ -89,7 +95,10 @@ public class VaccinationService {
                 catch (DateTimeParseException e) {
                     log.error("Wrong field Date");
                 }
-                catch (HttpClientErrorException e) {
+                /*catch (HttpClientErrorException e) {
+                    log.error("Passport-name is not valid in string " + i);
+                }*/
+                catch (FeignException e) {
                     log.error("Passport-name is not valid in string " + i);
                 }
             }
